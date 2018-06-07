@@ -1,0 +1,2 @@
+/home/kevin/LandmarkRec/train_images/10900/93159dee78da0b47.jpg
+/home/kevin/LandmarkRec/testlr/8905e6b9245c3f05.jpg

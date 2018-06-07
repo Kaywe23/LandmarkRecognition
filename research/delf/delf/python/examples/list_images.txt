@@ -1,0 +1,2 @@
+data/novatec_1.jpg
+data/novatec_2.jpg
