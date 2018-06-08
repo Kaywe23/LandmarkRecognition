@@ -35,9 +35,9 @@ keras.backend.set_session(sess)
 # dimensions of our images.
 img_width, img_height = 128, 128
 
-top_model_weights_path = 'bottleneck_fc_model3.h5'
-train_data_dir = '/home/kevin/LandmarkRec/train_images'
-validation_data_dir = '/home/kevin/LandmarkRec/valid_images'
+top_model_weights_path = 'bottleneck_fc_model.h5'
+train_data_dir = './train_images'
+validation_data_dir = './valid_images'
 def count(dir):
     i = 0
     count = []
@@ -56,85 +56,6 @@ nb_validation_samples = count(validation_data_dir)
 epochs = 2
 batch_size = 10
 
-def trainnolandmarkclassifier():
-    EPOCHS = 2
-    INIT_LR = 1e-3
-    BS = 32
-
-    # initialize the data and labels
-    print("[INFO] loading images...")
-    data = []
-    labels = []
-
-    imagePaths = sorted(list(paths.list_images('/home/kevin/LandmarkRec/LeNet_images')))
-    # grab the image paths and randomly shuffle them
-    # imagePaths = sorted(list(paths.list_images(args["dataset"])))
-    random.seed(42)
-    random.shuffle(imagePaths)
-
-    # loop over the input images
-    for imagePath in imagePaths:
-        # load the image, pre-process it, and store it in the data list
-        image = cv2.imread(imagePath)
-        image = cv2.resize(image, (128, 128))
-        image = img_to_array(image)
-        data.append(image)
-
-        # extract the class label from the image path and update the
-        # labels list
-        label = imagePath.split(os.path.sep)[-2]
-        label = 1 if label == "landmark" else 0
-        labels.append(label)
-    # scale the raw pixel intensities to the range [0, 1]
-    data = np.array(data, dtype="float") / 255.0
-    labels = np.array(labels)
-
-    # partition the data into training and testing splits using 75% of
-    # the data for training and the remaining 25% for testing
-    (trainX, testX, trainY, testY) = train_test_split(data,
-                                                      labels, test_size=0.25, random_state=42)
-
-    # convert the labels from integers to vectors
-    trainY = to_categorical(trainY, num_classes=2)
-    testY = to_categorical(testY, num_classes=2)
-
-    # construct the image generator for data augmentation
-    aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1,
-                             height_shift_range=0.1, shear_range=0.2, zoom_range=0.2,
-                             horizontal_flip=True, fill_mode="nearest")
-
-    # initialize the model
-    print("[INFO] compiling model...")
-
-    model = LeNet.build(width=128, height=128, depth=3, classes=2)
-    opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-    model.compile(loss="binary_crossentropy", optimizer=opt,
-                  metrics=["accuracy"])
-    model = load_model('/home/kevin/LandmarkRec/lenetmodel.model')
-
-
-    # train the network
-    print("[INFO] training network...")
-    H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BS),
-                            validation_data=(testX, testY), steps_per_epoch=100,
-                            epochs=EPOCHS, verbose=2)
-    # save the model to disk
-    print("[INFO] serializing network...")
-    # model.save(args["model"])
-    model.save('/home/kevin/LandmarkRec/lenetmodel.model')
-
-    # plot the training loss and accuracy
-    plt.style.use("ggplot")
-    plt.figure()
-    N = EPOCHS
-    plt.plot(np.arange(0, N), H.history["loss"], label="train_loss")
-    plt.plot(np.arange(0, N), H.history["val_loss"], label="val_loss")
-    plt.plot(np.arange(0, N), H.history["acc"], label="train_acc")
-    plt.plot(np.arange(0, N), H.history["val_acc"], label="val_acc")
-    plt.title("Training Loss and Accuracy on LR/NoLR")
-    plt.xlabel("Epoch #")
-    plt.ylabel("Loss/Accuracy")
-    plt.legend(loc="lower left")
 
 
 def save_bottleneck_features():
@@ -151,7 +72,7 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_train = model.predict_generator(
         generator, nb_train_samples // batch_size)
-    np.save(open('bottleneck_features_train3.npy', 'w'),
+    np.save(open('bottleneck_features_train.npy', 'w'),
             bottleneck_features_train)
 
     generator = datagen.flow_from_directory(
@@ -162,17 +83,17 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(
         generator, nb_validation_samples // batch_size)
-    np.save(open('bottleneck_features_validation3.npy', 'w'),
+    np.save(open('bottleneck_features_validation.npy', 'w'),
             bottleneck_features_validation)
 
 def train_top_model():
 
 
-    train_data = np.load(open('bottleneck_features_train3.npy'))
+    train_data = np.load(open('bottleneck_features_train.npy'))
     train_labels = np.array(
         [0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
 
-    validation_data = np.load(open('bottleneck_features_validation3.npy'))
+    validation_data = np.load(open('bottleneck_features_validation.npy'))
     validation_labels = np.array(
         [0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
 
@@ -245,7 +166,7 @@ def trainCNN():
         batch_size=batch_size,
         class_mode='categorical')
 
-    np.save('class_indices2.npy', train_generator.class_indices)
+    np.save('class_indices.npy', train_generator.class_indices)
 
     validation_generator = test_datagen.flow_from_directory(
         validation_data_dir,
@@ -267,9 +188,8 @@ def trainCNN():
 
 
 
-trainnolandmarkclassifier()
-#predictnolandmarkclassifier()
+
 #save_bottleneck_features()
 #train_top_model()
 #trainCNN()
-#predict('/home/kevin/LandmarkRec/testset_testing/')
+

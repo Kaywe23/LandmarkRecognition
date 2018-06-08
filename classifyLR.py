@@ -60,7 +60,7 @@ import tensorflow as tf
 
 print('define paths')
 
-maindir ='/home/kevin/LandmarkRec/'
+maindir ='./LandmarkRecognition/'
 
 top_model_weights_path = maindir + 'bottleneck_fc_model3.h5'
 train_data_dir = maindir + 'train_images'

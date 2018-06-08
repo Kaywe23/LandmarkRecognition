@@ -64,16 +64,12 @@ from delf import feature_extractor
 from delf import feature_io
 
 
-maindir ='/home/kevin/LandmarkRec/'
-mainpath = '/home/kevin/models/research/delf/delf/python/examples/'
-top_model_weights_path = maindir + 'bottleneck_fc_model3.h5'
+maindir ='./LandmarkRecognition/'
+mainpath = './models/research/delf/delf/python/examples/'
+top_model_weights_path = maindir + 'bottleneck_fc_model.h5'
 train_data_dir = maindir + 'train_images'
-testfile = maindir + 'testsplit5/'
-testfeatures = 'data/landmark_features_test5/'
-testfeatures2 = 'data/landmark_features_test5'
-trainfeatures = 'data/train_features/'
-testlist = 'images_test5.txt'
-subfile = maindir + 'sub5.csv'
+testfile = maindir + 'test/'
+
 
 def count(dir):
     i = 0
@@ -95,7 +91,7 @@ if os.path.exists('data/lk_features'):
     shutil.rmtree('data/lk_features')
 img_width, img_height = 128, 128
 
-#train_data_dir = '/home/kevin/LandmarkRec/train_images'
+
 
 nb_train_samples = count(train_data_dir)
 #nb_validation_samples = count(validation_data_dir)

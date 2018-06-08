@@ -31,9 +31,9 @@ from pathlib import Path
 # dimensions of our images.
 img_width, img_height = 128, 128
 
-top_model_weights_path = 'bottleneck_fc_model3.h5'
-#train_data_dir = '/home/kevin/LandmarkRec/train_images'
-validation_data_dir = '/home/kevin/LandmarkRec/valid_images'
+top_model_weights_path = 'bottleneck_fc_model.h5'
+#train_data_dir = './train_images'
+validation_data_dir = './valid_images'
 def count(dir):
     i = 0
     count = []
@@ -70,7 +70,7 @@ def predict(image_path):
 
 
 
-    with open('/home/kevin/LandmarkRec/submission.csv', 'wb') as csvfile:
+    with open('./submission.csv', 'wb') as csvfile:
         newFileWriter = csv.writer(csvfile)
         newFileWriter.writerow(['id', 'landmarks'])
 
@@ -157,4 +157,4 @@ def predict(image_path):
 
 
 
-predict('/home/kevin/LandmarkRec/test/')
+predict('./test/')
